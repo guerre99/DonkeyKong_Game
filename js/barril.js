@@ -1,12 +1,16 @@
 
 
 class Barril{
-    constructor(ctx){
+    constructor(ctx,canvasW,canvasH){
         this.ctx = ctx
-        this.x = 100  
-        this.y = 140
+        this.canvasW = canvasW
+        this.canvasH = canvasH
+        this.x = this.canvasH/6  
+        this.y = this.canvasH * 0.15        
         this.w = 36
         this.h = 24
+        this.dx = 5
+        this.dy = 1
 
         this.img = new Image()
 
@@ -15,7 +19,7 @@ class Barril{
         this.img.frameIndex = 0
 		this.img.frames = 4
 
-        this.vx = -2
+        this.vx = -4
 
         this.fall()
     }
@@ -35,6 +39,16 @@ class Barril{
         this.animateSprite(frameCounter)
     }
 
+    animateSprite(frameCounter) {
+		if (frameCounter % 6 === 0) {
+			this.img.frameIndex++
+
+			if (this.img.frameIndex >= this.img.frames) {
+				this.img.frameIndex = 0
+			}
+		}
+	}
+
     stop() {
 		if (this.falling) this.vx *= -1
 
@@ -50,23 +64,13 @@ class Barril{
 	}
 
     move() {
-		const gravity = 0.4
+		const gravity = 1.3
 
 		if (this.falling) {
 			this.vy += gravity
 			this.y += this.vy
 		} else {
 			this.x += this.vx
-		}
-	}
-    
-    animateSprite(frameCounter) {
-		if (frameCounter % 6 === 0) {
-			this.img.frameIndex++
-
-			if (this.img.frameIndex >= this.img.frames) {
-				this.img.frameIndex = 0
-			}
 		}
 	}
 }
