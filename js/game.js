@@ -18,23 +18,25 @@ const Game = {
 
         this.background = new Background(this.ctx, this.canvasW, this.canvasH)
 
-        this.nivel0 = new Nivel(this.ctx,this.canvasW - this.canvasW * 0.61,this.canvasH*0.095,this.canvasW/0.9245 * 0.22,this.canvasH)
+        this.niveles = [
 
-        this.nivel1 = new Nivel(this.ctx,0,this.canvasH*0.229,this.canvasW,this.canvasH)
+        new Nivel(this.ctx,this.canvasW - this.canvasW * 0.61,this.canvasH*0.095,this.canvasW/0.9245 * 0.22,this.canvasH),
 
-        this.nivel2 = new Nivel(this.ctx,this.canvasW - this.canvasW * 0.935,this.canvasH*0.3435,this.canvasW*1.3   ,this.canvasH)
+        new Nivel(this.ctx,0,this.canvasH*0.229,this.canvasW,this.canvasH),
 
-        this.nivel3 = new Nivel(this.ctx,0,this.canvasH*0.497,this.canvasW,this.canvasH)
+        new Nivel(this.ctx,this.canvasW - this.canvasW * 0.935,this.canvasH*0.3435,this.canvasW*1.3,this.canvasH),
 
-        this.nivel4 = new Nivel(this.ctx,this.canvasW - this.canvasW * 0.935,this.canvasH*0.6552,this.canvasW*1.3,this.canvasH)
+        new Nivel(this.ctx,0,this.canvasH*0.497,this.canvasW,this.canvasH),
 
-        this.nivel5 = new Nivel(this.ctx,0,this.canvasH*0.8117,this.canvasW,this.canvasH)
+        new Nivel(this.ctx,this.canvasW - this.canvasW * 0.935,this.canvasH*0.6552,this.canvasW*1.3,this.canvasH),
 
-        this.base = new Nivel(this.ctx,0,this.canvasH*0.9644,this.canvasW/0.9245,this.canvasH)
+        new Nivel(this.ctx,0,this.canvasH*0.8117,this.canvasW,this.canvasH),
 
-        this.barril = new Barril(this.ctx,this.canvasW,this.canvasH,this.nivel1.x,this.nivel1.ancho,this.nivel1.y,this.nivel2.x,this.nivel2.y,this.nivel3.x,this.nivel3.ancho,this.nivel3.y,this.nivel4.x,this.nivel4.y,this.nivel5.x,this.nivel5.ancho,this.nivel5.y,this.base.y)
+        new Nivel(this.ctx,0,this.canvasH*0.9644,this.canvasW/0.9245,this.canvasH),
 
+        ]
 
+        this.barril = new Barril(this.ctx,this.canvasW,this.canvasH)
 		
 		this.start()
 	},
@@ -63,14 +65,27 @@ const Game = {
 
     drawAll(){
         this.background.draw()
-        this.nivel0.draw()
-        this.nivel1.draw()
-        this.nivel2.draw()
-        this.nivel3.draw()
-        this.nivel4.draw()
-        this.nivel5.draw()
-        this.base.draw()
+        this.niveles.forEach((nivel) => {
+            nivel.draw()
+        })
         this.barril.draw(this.frameCounter)
+        if (
+            !this.niveles.some((nivel) => {
+                const isCollision =
+                    this.barril.y + this.barril.h >= nivel.y &&
+                    this.barril.y < nivel.y + nivel.h &&
+                    this.barril.x + this.barril.w > nivel.x &&
+                    this.barril.x < nivel.x + nivel.w
+    
+                if (isCollision) {
+                    this.barril.stop()
+                    this.barril.y = nivel.y - this.barril.h
+                }
+    
+                return isCollision
+            })
+        )
+            this.barril.fall()
     },
 
     moveAll(){
