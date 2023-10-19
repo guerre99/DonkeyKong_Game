@@ -9,8 +9,6 @@ class Barril{
         this.y = this.canvasH * 0.15        
         this.w = 36
         this.h = 24
-        this.dx = 5
-        this.dy = 1
 
         this.img = new Image()
 

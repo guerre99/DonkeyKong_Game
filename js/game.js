@@ -3,6 +3,13 @@ const Game = {
 	canvasW: undefined,
 	canvasH: undefined,
 	fps: 60,
+    keys : {
+        jump: 'Space',
+        right: 'KeyD',
+        left: 'KeyA',
+        up: 'KeyW',
+        down: 'KeyS'
+    },
 
     init: function () {
 		const canvas = document.querySelector('canvas')
@@ -49,6 +56,8 @@ const Game = {
         // w 1536 h 786
 
         this.barril = []
+
+        this.mario = new Player(this.ctx,this.canvasW,this.canvasH,this.keys)
 		
 		this.start()
 	},
@@ -83,26 +92,56 @@ const Game = {
         this.escaleras.forEach((escalera) => {
             escalera.draw()
         })
+        this.mario.draw(this.frameCounter)
         this.barril.forEach((barril) => {
             barril.draw(this.frameCounter)
             if (
                 !this.niveles.some((nivel) => {
-                    const isCollision =
+                    const isCollisionBarrilNivel =
                         barril.y + barril.h >= nivel.y &&
                         barril.y < nivel.y + nivel.h &&
                         barril.x + barril.w > nivel.x &&
                         barril.x < nivel.x + nivel.w
         
-                    if (isCollision) {
+                    if (isCollisionBarrilNivel) {
                         barril.stop()
                         barril.y = nivel.y - barril.h
                     }
         
-                    return isCollision
+                    return isCollisionBarrilNivel
                 })
             )
             barril.fall()
             if(barril.y > this.canvasH + 200) this.barril.shift(0)
+        })
+
+        if(!this.niveles.some((nivel)=>{
+            const isCollisionMarioNivel =
+                this.mario.y + this.mario.h >= nivel.y &&
+                this.mario.y < nivel.y + nivel.h &&
+                this.mario.x + this.mario.w > nivel.x &&
+                this.mario.x < nivel.x + nivel.w
+        
+            if (isCollisionMarioNivel) {
+                this.mario.anda()
+                this.mario.parar()
+                this.mario.y = nivel.y - this.mario.h
+            }
+            return isCollisionMarioNivel
+        })){
+        this.mario.saltar()
+        }
+
+        this.escaleras.some((escalera)=>{
+            const isCollisionMarioEscalera =
+                this.mario.y + this.mario.h >= escalera.y &&
+                this.mario.y < escalera.y + escalera.h &&
+                this.mario.x + this.mario.w > escalera.x &&
+                this.mario.x < escalera.x + escalera.w
+        
+                if (!isCollisionMarioEscalera) {
+                    this.mario.subir()
+                }
         })
     },
 
@@ -110,6 +149,7 @@ const Game = {
         this.barril.forEach((barril) => {
             barril.move()
         })
+        this.mario.move()
     },
 
     generateBarril: function () {
