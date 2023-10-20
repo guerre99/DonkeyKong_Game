@@ -4,9 +4,9 @@ class Player {
         this.canvasW = canvasW
         this.canvasH = canvasH
         this.keys = keys
-        this.x = 100
-        this.y = 700
-        this.y0 = this.y
+        this.x = 260
+        this.y = 500
+        this.y0
         this.w = 36
         this.h = 24
 
@@ -15,192 +15,131 @@ class Player {
         // this.img.frameIndex = 0
         // this.frames = 3
 
-        this.vx = 0
+        this.vx = 2
         this.vy = 0
-        this.gravity = 0.5
+		this.gravity = 0.3
+
 
         this.actions = {
 			jump: false,
 			right: false,
             left: false,
             up: false,
-            down: false
+            down: false,
+            enEscalera: false
 		}
 
-        this.anda()
-        this.saltar()
+        // this.caer()
+        this.setControls()
     }
 
-    anda(){
-        document.addEventListener('keydown', (event) => {
-            switch (event.code) {
-                    
-                case this.keys.right:
-                    this.actions.right = true
-                    this.vx = 2
-                    break
-                    
-                case this.keys.left:
-                    this.actions.left = true
-                    this.vx = 2
-                    break
-            }
-        
-        })
-        document.addEventListener('keyup', (event) => {
-            switch (event.code) {
-                
-                case this.keys.right:
-                    this.actions.right = false
-                    break
-                
-                case this.keys.left:
-                    this.actions.left = false
-                    break
-            }
-        })    
-    }
-
-    saltar(){
-        if (this.falling){
-            this.vy = -10
-            document.addEventListener('keydown', (event) => {
-                switch (event.code) {
-                    case this.keys.jump:
-                        this.actions.jump = true
-                        break
-                }
-            })
-            document.addEventListener('keyup', (event) => {
-                switch (event.code) {
-                    case this.keys.jump:
-                        this.actions.jump = false
     
-                        break
-                }
-            })
-            this.falling = true
-        }
-    }
 
-    parar(){
-        if(this.falling){
-            this.falling=false
-            this.vy = 0
-        }
-    }
 
-    subir(){
+    // caer(){
+	// 	if (this.falling) return
+
+	// 	this.vy = 2
+	// 	this.falling = true
+    // }
+
+
+
+    setControls(){
         document.addEventListener('keydown', (event) => {
-			switch (event.code) {                
+			switch (event.code) {
+				case this.keys.jump:
+                    if(!this.actions.jump){
+					this.actions.jump = true
+                    this.vy = -4
+                    this.y -= 20
+                    }
+					break
+
+				case this.keys.right:
+					this.actions.right = true
+                 
+					break
+                
+                case this.keys.left:
+					this.actions.left = true
+                 
+					break
+                
                 case this.keys.up:
-					this.actions.up = true
-                    this.vy = 2
+                    if(this.actions.enEscalera) {
+                        this.y -= 1
+                        this.actions.up = true
+                    }
+				
+                   
 					break
 
                 case this.keys.down:
-					this.actions.down = true
-                    this.vy = 2
+                    if(this.actions.enEscalera) {
+                        this.actions.down = true
+                    }
+				
+                  
 					break
 			}
         
 		})
+
         document.addEventListener('keyup', (event) => {
-			switch (event.code) {                
+			switch (event.code) {
+
+				case this.keys.right:
+					this.actions.right = false
+                  
+					break
+                
+                case this.keys.left:
+			    	this.actions.left = false
+               
+					break
+                
                 case this.keys.up:
+
+              
 					this.actions.up = false
+                  
+                  
 					break
 
                 case this.keys.down:
+				
 					this.actions.down = false
+                
+                 
 					break
 			}
         })
     }
+    move() {
 
-    // setControls(){
-    //     document.addEventListener('keydown', (event) => {
-	// 		switch (event.code) {
-	// 			case this.keys.jump:
-	// 				this.actions.jump = true
-    //                 this.vy = 2
+		// if (this.falling) {
+		// 	this.vy += this.gravity
+		// 	this.y += this.vy
+		// }
 
-	// 				break
-
-	// 			case this.keys.right:
-	// 				this.actions.right = true
-    //                 this.vx = 2
-	// 				break
-                
-    //             case this.keys.left:
-	// 				this.actions.left = true
-    //                 this.vx = 2
-	// 				break
-                
-    //             case this.keys.up:
-	// 				this.actions.up = true
-    //                 this.vy = 2
-	// 				break
-
-    //             case this.keys.down:
-	// 				this.actions.down = true
-    //                 this.vy = 2
-	// 				break
-	// 		}
-        
-	// 	})
-
-    //     document.addEventListener('keyup', (event) => {
-	// 		switch (event.code) {
-    //             case this.keys.jump:
-	// 				this.actions.jump = false
-	// 				break
-
-	// 			case this.keys.right:
-	// 				this.actions.right = false
-	// 				break
-                
-    //             case this.keys.left:
-	// 				this.actions.left = false
-	// 				break
-                
-    //             case this.keys.up:
-	// 				this.actions.up = false
-	// 				break
-
-    //             case this.keys.down:
-	// 				this.actions.down = false
-	// 				break
-	// 		}
-    //     })
-    // }
-
-    move(){
-
-        if(this.actions.jump){
-            if (this.falling) {
-                this.vy += this.gravity
-                this.y += this.vy
-            }
-        }
-        
-        if (this.actions.right){
-
-            this.x += this.vx
-        }
-
-        if(this.actions.left){
-            this.x -= this.vx
-        }
-
-        if(this.actions.up){
-            this.y -= this.vy
-        }
-
-        if(this.actions.down){
+        if(this.actions.enEscalera && this.actions.down){
+            this.y += 2
+        }else if(this.actions.enEscalera && this.actions.up){
+            this.y -= 2
+        } else if (this.actions.jump) {
+            this.vy += this.gravity 
             this.y += this.vy
+        } else {
+            this.vy = 0
         }
-    }
+
+        if(this.actions.right) this.x += this.vx
+        else if (this.actions.left) this.x -= this.vx
+        
+       
+        console.log(this.actions)
+	}
 
     draw(/*frameCounter*/){
         this.ctx.fillRect(this.x,this.y,this.w,this.h)

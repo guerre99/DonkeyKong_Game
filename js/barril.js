@@ -62,7 +62,7 @@ class Barril{
 	}
 
     move() {
-		const gravity = 1.3
+		const gravity = 0.3
 
 		if (this.falling) {
 			this.vy += gravity

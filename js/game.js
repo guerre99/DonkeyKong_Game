@@ -118,31 +118,48 @@ const Game = {
         if(!this.niveles.some((nivel)=>{
             const isCollisionMarioNivel =
                 this.mario.y + this.mario.h >= nivel.y &&
-                this.mario.y < nivel.y + nivel.h &&
+                this.mario.y <= nivel.y - this.canvasH * 0.02 &&
                 this.mario.x + this.mario.w > nivel.x &&
                 this.mario.x < nivel.x + nivel.w
         
             if (isCollisionMarioNivel) {
-                this.mario.anda()
-                this.mario.parar()
-                this.mario.y = nivel.y - this.mario.h
+                if(this.mario.actions.jump ){
+                    this.mario.actions.jump = false
+                  
+                }
+                if(!this.mario.actions.enEscalera) {
+                    this.mario.y = nivel.y - this.mario.h
+                 }    
             }
+
             return isCollisionMarioNivel
         })){
-        this.mario.saltar()
-        }
 
-        this.escaleras.some((escalera)=>{
+            if(!this.mario.actions.enEscalera) {
+                this.mario.actions.jump = true   
+            }
+     
+        }
+    
+
+        if(!this.escaleras.some((escalera)=>{
             const isCollisionMarioEscalera =
                 this.mario.y + this.mario.h >= escalera.y &&
-                this.mario.y < escalera.y + escalera.h &&
-                this.mario.x + this.mario.w > escalera.x &&
-                this.mario.x < escalera.x + escalera.w
+                this.mario.y + this.mario.h <= escalera.y + escalera.h &&
+                this.mario.x + this.mario.w/2 > escalera.x &&
+                this.mario.x + this.mario.w/2< escalera.x + escalera.w
         
-                if (!isCollisionMarioEscalera) {
-                    this.mario.subir()
+                if (isCollisionMarioEscalera) {
+                    this.mario.actions.enEscalera = true
+                    console.warn("SI")
+                  
                 }
-        })
+
+                return isCollisionMarioEscalera
+        })){
+            console.warn("Vamos")
+            this.mario.actions.enEscalera = false
+        }
     },
 
     moveAll(){
