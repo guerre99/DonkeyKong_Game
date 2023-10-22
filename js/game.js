@@ -60,6 +60,8 @@ const Game = {
 
         this.dk = new DonkeyKong(this.ctx,this.canvasW,this.canvasH)
 
+        this.peach = new Peach(this.ctx,this.canvasW,this.canvasH)
+
         this.mario = new Player(this.ctx,this.canvasW,this.canvasH,this.keys)
 		
 		this.start()
@@ -70,13 +72,18 @@ const Game = {
 
 		this.frameCounter = 0
         this.generador = 100
+        this.score = 10000
 
 		this.intervalId = setInterval(() => {
 			
 
 			this.frameCounter++
 
-			this.score += 0.03
+			this.score -= 1
+            console.log(this.score)
+            if(this.score == 0){
+                this.gameOver()
+            }
 
             this.drawAll()
             this.moveAll()
@@ -91,6 +98,7 @@ const Game = {
     drawAll(){
         this.background.draw(this.frameCounter)
         this.dk.draw(this.frameCounter)
+        this.peach.draw(this.frameCounter)
         this.niveles.forEach((nivel) => {
             nivel.draw()
         })
@@ -99,7 +107,6 @@ const Game = {
         })
         this.mario.draw(this.frameCounter)
         this.barril.forEach((barril) => {
-            console.log(barril.vx)
             barril.draw(this.frameCounter)
             if (
                 !this.niveles.some((nivel) => {
@@ -119,6 +126,12 @@ const Game = {
             )
             barril.fall()
             if(barril.y > this.canvasH + 200) this.barril.shift(0)
+            const isCollisionMarioBarril = 
+                barril.y + barril.h > this.mario.y &&
+                barril.y < this.mario.y + this.mario.h &&
+                barril.x + barril.w*0.5 > this.mario.x &&
+                barril.x < this.mario.x + this.mario.w*0.5
+            // if(isCollisionMarioBarril) this.gameOver()
         })
 
         if(!this.niveles.some((nivel)=>{
@@ -162,6 +175,16 @@ const Game = {
         })){
             this.mario.actions.enEscalera = false
         }
+
+        const isCollisionMarioPeach = 
+            this.mario.y + this.mario.h >= this.peach.y &&
+            this.mario.y <= this.peach.y + this.peach.h &&
+            this.mario.x + this.mario.w/2 > this.peach.x &&
+            this.mario.x < this.peach.x + this.peach.w/2
+        
+        if (isCollisionMarioPeach){
+            this.gameWon()
+        }
     },
 
     moveAll(){
@@ -176,4 +199,22 @@ const Game = {
 			new Barril(this.ctx,this.canvasW,this.canvasH)
 		)
 	},
+    gameOver: function () {
+		// para el intervalo que implementa el loop de animación
+		clearInterval(this.intervalId)
+
+		if (confirm('GAME OVER! ¿Volver a jugar?')) {
+			this.reset()
+		}
+	},
+
+    gameWon: function () {
+		// para el intervalo que implementa el loop de animación
+		clearInterval(this.intervalId)
+
+		if (confirm(`Enhorabuena! Tu score es de ${this.score} puntos. ¿Quieres volver a jugar?`)) {
+			this.reset()
+		}
+	}
+    
 }
