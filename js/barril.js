@@ -5,19 +5,17 @@ class Barril{
         this.ctx = ctx
         this.canvasW = canvasW
         this.canvasH = canvasH
-        this.x = this.canvasH/6  
-        this.y = this.canvasH * 0.15        
+        this.x = this.canvasW/5.8 
+        this.y = this.canvasH * 0.19        
         this.w = 36
         this.h = 24
 
         this.img = new Image()
 
-        this.img.src = 'assets/barril2a.png'
-
         this.img.frameIndex = 0
 		this.img.frames = 4
 
-        this.vx = -4
+        this.vx = -5
 
         this.fall()
     }
@@ -48,7 +46,16 @@ class Barril{
 	}
 
     stop() {
-		if (this.falling) this.vx *= -1
+		if (this.falling) {
+            this.vx *= -1
+            if(this.vx < 0){
+                this.vx += 0.5
+                this.img.src = 'assets/barril2b.png'
+            }else if(this.vx > 0){
+                this.vx -= 0.5
+                this.img.src = 'assets/barril2a.png'
+            }
+        }
 
 		this.falling = false
 		this.vy = 0

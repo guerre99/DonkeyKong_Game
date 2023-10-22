@@ -4,16 +4,16 @@ class Player {
         this.canvasW = canvasW
         this.canvasH = canvasH
         this.keys = keys
-        this.x = 260
-        this.y = 500
+        this.x = this.canvasW*0.05
+        this.y = this.canvasH*0.9  
         this.y0
         this.w = 36
         this.h = 24
 
-        // this.img = new Image()
-        // this.img.src = 'assets/marioDCHA.gif'
-        // this.img.frameIndex = 0
-        // this.frames = 3
+        this.img = new Image()
+        this.img.src = 'assets/marioQuietoDCHA.png'
+        this.img.frameIndex = 0
+        this.img.frames = 1
 
         this.vx = 2
         this.vy = 0
@@ -29,21 +29,8 @@ class Player {
             enEscalera: false
 		}
 
-        // this.caer()
         this.setControls()
     }
-
-    
-
-
-    // caer(){
-	// 	if (this.falling) return
-
-	// 	this.vy = 2
-	// 	this.falling = true
-    // }
-
-
 
     setControls(){
         document.addEventListener('keydown', (event) => {
@@ -58,11 +45,15 @@ class Player {
 
 				case this.keys.right:
 					this.actions.right = true
+                    this.img.src = 'assets/marioDCHA.png'
+                    this.img.frames = 3
                  
 					break
                 
                 case this.keys.left:
 					this.actions.left = true
+                    this.img.src = 'assets/marioIZQ.png'
+                    this.img.frames = 3
                  
 					break
                 
@@ -70,18 +61,18 @@ class Player {
                     if(this.actions.enEscalera) {
                         this.y -= 1
                         this.actions.up = true
+                        this.img.src = 'assets/marioUP.png'
+                        this.img.frames = 3
                     }
-				
-                   
-					break
+				    break
 
                 case this.keys.down:
                     if(this.actions.enEscalera) {
                         this.actions.down = true
+                        this.img.src = 'assets/marioUP.png'
+                        this.img.frames = 3
                     }
-				
-                  
-					break
+				    break
 			}
         
 		})
@@ -91,25 +82,41 @@ class Player {
 
 				case this.keys.right:
 					this.actions.right = false
+                    this.img.src = 'assets/marioQuietoDCHA.png'
+                    this.img.frames = 1
                   
 					break
                 
                 case this.keys.left:
 			    	this.actions.left = false
+                    this.img.src = 'assets/marioQuietoIZQ.png'
+                    this.img.frames = 1
                
 					break
                 
                 case this.keys.up:
 
-              
 					this.actions.up = false
-                  
+                    if(this.actions.enEscalera) {
+                    this.img.src = 'assets/marioQuietoUP.png'
+                    this.img.frames = 1
+                    }else {
+                        this.img.src = 'assets/marioQuietoDCHA.png'
+                        this.img.frames = 1
+                    }
                   
 					break
 
                 case this.keys.down:
 				
 					this.actions.down = false
+                    if(this.actions.enEscalera) {
+                        this.img.src = 'assets/marioQuietoUP.png'
+                        this.img.frames = 1
+                    }else {
+                        this.img.src = 'assets/marioQuietoDCHA.png'
+                        this.img.frames = 1
+                    }
                 
                  
 					break
@@ -117,54 +124,48 @@ class Player {
         })
     }
     move() {
-
-		// if (this.falling) {
-		// 	this.vy += this.gravity
-		// 	this.y += this.vy
-		// }
-
         if(this.actions.enEscalera && this.actions.down){
-            this.y += 2
-        }else if(this.actions.enEscalera && this.actions.up){
+           this.y += 2
+        }
+        else if(this.actions.enEscalera && this.actions.up){
             this.y -= 2
-        } else if (this.actions.jump) {
+        }
+        else if (this.actions.jump) {
             this.vy += this.gravity 
             this.y += this.vy
-        } else {
+        }
+        else {
             this.vy = 0
         }
 
         if(this.actions.right) this.x += this.vx
         else if (this.actions.left) this.x -= this.vx
-        
-       
-        console.log(this.actions)
 	}
 
-    draw(/*frameCounter*/){
-        this.ctx.fillRect(this.x,this.y,this.w,this.h)
-        this.ctx.fillStyle = 'white'
-        // this.ctx.drawImage(
-        //     this.img,
-        //     this.img.frameIndex * (this.img.width / this.img.frames),
-        //     0,
-        //     this.img.width / this.img.frames,
-		// 	this.img.height,
-        //     this.x,
-		// 	this.y,
-		// 	this.w,
-		// 	this.h
-        // )
-        // this.animateSprite(frameCounter)
+    draw(frameCounter){
+        // this.ctx.fillRect(this.x,this.y,this.w,this.h)
+        // this.ctx.fillStyle = 'white'
+        this.ctx.drawImage(
+            this.img,
+            this.img.frameIndex * (this.img.width / this.img.frames),
+            0,
+            this.img.width / this.img.frames,
+			this.img.height,
+            this.x,
+			this.y,
+			this.w,
+			this.h
+        )
+        this.animateSprite(frameCounter)
     }
 
-    // animateSprite(frameCounter) {
-	// 	if (frameCounter % 6 === 0) {
-	// 		this.img.frameIndex++
+    animateSprite(frameCounter) {
+		if (frameCounter % 6 === 0) {
+			this.img.frameIndex++
 
-	// 		if (this.img.frameIndex >= this.img.frames) {
-	// 			this.img.frameIndex = 0
-	// 		}
-	// 	}
-	// }
+			if (this.img.frameIndex >= this.img.frames) {
+				this.img.frameIndex = 0
+			}
+		}
+	}
 }

@@ -24,6 +24,7 @@ const Game = {
 
         this.background = new Background(this.ctx, this.canvasW, this.canvasH)
 
+
         this.niveles = [
 
         new Nivel(this.ctx,this.canvasW - this.canvasW * 0.61,this.canvasH*0.095,this.canvasW/0.9245 * 0.22,this.canvasH),
@@ -38,7 +39,7 @@ const Game = {
 
         new Nivel(this.ctx,0,this.canvasH*0.8117,this.canvasW,this.canvasH),
 
-        new Nivel(this.ctx,0,this.canvasH*0.9644,this.canvasW/0.9245,this.canvasH),
+        new Nivel(this.ctx,0,this.canvasH*0.9644,this.canvasW/0.9245,this.canvasH *1.25 ),
 
         ]
 
@@ -57,6 +58,8 @@ const Game = {
 
         this.barril = []
 
+        this.dk = new DonkeyKong(this.ctx,this.canvasW,this.canvasH)
+
         this.mario = new Player(this.ctx,this.canvasW,this.canvasH,this.keys)
 		
 		this.start()
@@ -66,6 +69,7 @@ const Game = {
 		// loop de render
 
 		this.frameCounter = 0
+        this.generador = 100
 
 		this.intervalId = setInterval(() => {
 			
@@ -76,16 +80,17 @@ const Game = {
 
             this.drawAll()
             this.moveAll()
-
-			if (this.frameCounter % 100 === 0) {
+            
+			if (this.frameCounter % this.generador === 0) {
 				this.generateBarril()
 			}
-            
+
 		}, 1000 / this.fps)
 	},
 
     drawAll(){
         this.background.draw(this.frameCounter)
+        this.dk.draw(this.frameCounter)
         this.niveles.forEach((nivel) => {
             nivel.draw()
         })
@@ -94,6 +99,7 @@ const Game = {
         })
         this.mario.draw(this.frameCounter)
         this.barril.forEach((barril) => {
+            console.log(barril.vx)
             barril.draw(this.frameCounter)
             if (
                 !this.niveles.some((nivel) => {
@@ -125,7 +131,6 @@ const Game = {
             if (isCollisionMarioNivel) {
                 if(this.mario.actions.jump ){
                     this.mario.actions.jump = false
-                  
                 }
                 if(!this.mario.actions.enEscalera) {
                     this.mario.y = nivel.y - this.mario.h
@@ -151,13 +156,10 @@ const Game = {
         
                 if (isCollisionMarioEscalera) {
                     this.mario.actions.enEscalera = true
-                    console.warn("SI")
-                  
                 }
 
                 return isCollisionMarioEscalera
         })){
-            console.warn("Vamos")
             this.mario.actions.enEscalera = false
         }
     },
